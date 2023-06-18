@@ -35,13 +35,13 @@ public class PostService {
 		 postRepository.deleteById(id);
 	}
 
-	public Post update(Long postId,Post post) {
-		Optional<Post> pst = postRepository.findById(postId);
-		if(pst.isPresent()) {
-			pst.get().setContent(post.getContent());
-		}
-		return postRepository.save(pst.get());
-		
+	public Post update(Long postId, Post post) {
+		Optional<Post> optionalPost = postRepository.findById(postId);
+		return optionalPost.map(p -> {
+			p.setContent(post.getContent());
+			return postRepository.save(p);
+		}).orElse(null);
 	}
+
 
 }
