@@ -19,12 +19,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class Post {
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
 	@Column(columnDefinition = "VARCHAR(2000)",nullable = false) 
     private String content;
+	
 	@JsonIgnoreProperties({"hibernateLazyInitializer"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
