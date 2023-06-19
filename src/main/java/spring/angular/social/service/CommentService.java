@@ -33,6 +33,7 @@ public class CommentService {
         comment.setNotification(notification);
 
         notificationService.createNotification(notification);
+        System.out.println("comment notification"+ cmt.toString());
         return cmt;
     }
 
