@@ -1,9 +1,7 @@
 package spring.angular.social.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,7 @@ public class FriendConnectionService {
     @Autowired
     private NotificationService notificationService;
 
+    private final Map<Integer, List<Integer>> friendConnections = new HashMap<>();
     @Autowired
     public FriendConnectionService(FriendConnectionRepository friendConnectionRepository) {
         this.friendConnectionRepository = friendConnectionRepository;
@@ -64,4 +63,8 @@ public class FriendConnectionService {
 	    return friendNames;
 	}
 
+    public boolean isFriend(int userId, int friendId) {
+        List<Integer> friends = friendConnections.get(userId);
+        return friends != null && friends.contains(friendId);
+    }
 }

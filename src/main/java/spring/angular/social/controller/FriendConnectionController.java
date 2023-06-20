@@ -66,4 +66,9 @@ public class FriendConnectionController {
         List<String> friendNames = friendConnectionService.getFriendNames(userId);
         return ResponseEntity.ok(friendNames);
     }
+
+    @GetMapping("/users/{userId}/friends/{friendId}")
+    public boolean isFriend(@PathVariable int userId, @PathVariable int friendId) {
+        return friendConnectionService.isFriend(userId, friendId);
+    }
 }
