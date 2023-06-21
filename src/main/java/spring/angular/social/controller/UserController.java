@@ -48,8 +48,6 @@ public class UserController {
     @GetMapping("/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
         User user = userService.findByUsername(username);
-        if (user == null) {
-        }
         return ResponseEntity.ok(user);
     }
     

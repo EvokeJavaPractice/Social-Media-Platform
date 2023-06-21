@@ -3,6 +3,7 @@ package spring.angular.social.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,11 +22,9 @@ import spring.angular.social.service.NotificationService;
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/api/notifications")
 public class NotificationController {
-    private final NotificationService notificationService;
 
-    public NotificationController(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
+    @Autowired
+    private  NotificationService notificationService;
 
     @PostMapping
     public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {

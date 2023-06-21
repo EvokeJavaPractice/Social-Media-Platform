@@ -1,6 +1,7 @@
 package spring.angular.social.controller;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,11 +22,8 @@ import spring.angular.social.service.ProfileService;
 @RequestMapping("/api/profiles")
 public class ProfileController {
 
-    private final ProfileService profileService;
-
-    public ProfileController(ProfileService profileService) {
-        this.profileService = profileService;
-    }
+    @Autowired
+    private ProfileService profileService;
 
     @GetMapping("/{profileId}")
     public ResponseEntity<Profile> getProfile(@PathVariable Long profileId) {

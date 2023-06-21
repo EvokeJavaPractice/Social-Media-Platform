@@ -9,6 +9,5 @@ import spring.angular.social.entity.Notification;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-
-	List<Notification> findByUserIdOrderByCreatedAtDesc(Long userId);
+    List<Notification> findByUserIdOrderByCreatedAtDesc(Long userId);
 }

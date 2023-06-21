@@ -25,8 +25,7 @@ public class Profile {
 	@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-	
-    private String fullName;
+	private String fullName;
     private String bio;
     
     

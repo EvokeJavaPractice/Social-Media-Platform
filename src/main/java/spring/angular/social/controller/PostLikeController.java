@@ -2,6 +2,7 @@ package spring.angular.social.controller;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,12 +13,9 @@ import spring.angular.social.service.PostLikeService;
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/api/likes")
 public class PostLikeController {
-    private final PostLikeService likeService;
-    
-    public PostLikeController(PostLikeService likeService) {
-        this.likeService = likeService;
-    }
-    
+    @Autowired
+    private PostLikeService likeService;
+
     @PostMapping
     public ResponseEntity<PostLike> createPostLike(@RequestBody PostLike like) {
         PostLike createdPostLike = likeService.createPostLike(like);

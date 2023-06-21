@@ -10,5 +10,5 @@ import spring.angular.social.entity.ChatMessage;
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
 
-	List<ChatMessage> findByChatIdOrderByTimestamp(Long chatId);
+    List<ChatMessage> findByChatIdOrderByTimestamp(Long chatId);
 }

@@ -2,6 +2,7 @@ package spring.angular.social.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,11 +20,9 @@ import spring.angular.social.service.ChatService;
 @RestController
 @RequestMapping("/api/chats")
 public class ChatController {
-    private final ChatService chatService;
+    @Autowired
+    private  ChatService chatService;
 
-    public ChatController(ChatService chatService) {
-        this.chatService = chatService;
-    }
 
     @PostMapping
     public ResponseEntity<Chat> createChat(@RequestBody Chat chat) {

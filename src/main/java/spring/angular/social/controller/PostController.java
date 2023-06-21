@@ -2,6 +2,7 @@ package spring.angular.social.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,60 +28,48 @@ import spring.angular.social.service.UserService;
 @RequestMapping("/api/posts")
 public class PostController {
 
-	private final PostService postService;
+    @Autowired
+    private PostService postService;
+    @Autowired
+    private UserService userService;
 
-	private final UserService userService;
 
-	public PostController(PostService postService, UserService userService) {
-		this.postService = postService;
-		this.userService = userService;
-	}
+    @PostMapping
+    public ResponseEntity<Post> savePost(@RequestBody Post post) {
+        return ResponseEntity.ok(postService.save(post));
+    }
 
-//    @PostMapping
-//    public ResponseEntity<Post> savePost(@RequestBody Post post){
-//    	Post pst = postService.save(post);
-//    	return ResponseEntity.ok(pst);
-//    }
+    @GetMapping("/{username}")
+    public ResponseEntity<List<Post>> getPostsByUser(@PathVariable String username) {
+        User user = userService.findByUsername(username);
+        if (user == null) {
+        }
+        List<Post> posts = postService.getUserPosts(user);
+        return ResponseEntity.ok(posts);
+    }
 
-//    @GetMapping
-//    public ResponseEntity<List<Post>> getAllPosts() {
-//        List<Post> posts = postService.getAllPosts();
-//        return ResponseEntity.ok(posts);
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable Long id) {
+        postService.delete(id);
+        return ResponseEntity.ok("post deleted");
+    }
 
-	@GetMapping("/user/{username}")
-	public ResponseEntity<List<Post>> getPostsByUser(@PathVariable String username) {
-		User user = userService.findByUsername(username);
-		if (user == null) {
-		}
-		List<Post> posts = postService.getUserPosts(user);
-		return ResponseEntity.ok(posts);
-	}
+    @PutMapping("/{postId}")
+    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody Post post) {
+        Post pst = postService.update(postId, post);
+        return ResponseEntity.ok(pst);
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deletePost(@PathVariable Long id) {
-		postService.delete(id);
-		return ResponseEntity.ok("post deleted");
-	}
+    @PostMapping
+    public ResponseEntity<PostDto> post(@RequestBody PostDto postDto) {
+        return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
+    }
 
-	@PutMapping("/{postId}")
-	public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody Post post) {
-		Post pst = postService.update(postId, post);
-		return ResponseEntity.ok(pst);
-	}
-
-	@PostMapping
-	public ResponseEntity<PostDto> post(@RequestBody PostDto postDto) {
-		return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
-	}
-
-	@GetMapping
-	public List<PostDto> getAllPosts(
-			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
-    //   	@RequestParam(value = "sortBy", defaultValue = AppContastants.DEFAULT_SORT_BY, required = false) String sortBy,
-	//		@RequestParam(value = "sortDir", defaultValue = AppContastants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) 
-	){
-		return postService.getAllPosts(pageNo,pageSize);
-	}
+    @GetMapping
+    public List<PostDto> getAllPosts(
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
+    ) {
+        return postService.getAllPosts(pageNo, pageSize);
+    }
 }
