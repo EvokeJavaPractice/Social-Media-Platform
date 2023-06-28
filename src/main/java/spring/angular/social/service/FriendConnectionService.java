@@ -67,4 +67,14 @@ public class FriendConnectionService {
         List<Integer> friends = friendConnections.get(userId);
         return friends != null && friends.contains(friendId);
     }
+
+	public void setFriendConnections(Map<Integer, List<Integer>> friendConnections) {
+		
+		
+	}
+
+	public void setNotificationService(NotificationService notificationService) {
+		this.notificationService = notificationService;
+		
+	}
 }

@@ -21,7 +21,12 @@ public class PostLikeService {
         this.likeRepository = likeRepository;
     }
     
-    public PostLike createPostLike(PostLike like) {
+    public PostLikeService(PostLikeRepository likeRepository, NotificationService notificationService) {
+		this.likeRepository = likeRepository;
+		this.notificationService = notificationService;
+	}
+
+	public PostLike createPostLike(PostLike like) {
         PostLike pl = likeRepository.save(like);
         Notification notification = new Notification();
         notification.setUser(like.getUser());

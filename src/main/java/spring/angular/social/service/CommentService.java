@@ -13,6 +13,7 @@ import spring.angular.social.repository.CommentRepository;
 
 @Service
 public class CommentService {
+	
     private final CommentRepository commentRepository;
     
 
@@ -61,5 +62,6 @@ public class CommentService {
 		this.notificationService = notificationService;
 		
 	}
+
 }
 

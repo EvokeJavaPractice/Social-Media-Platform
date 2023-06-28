@@ -27,7 +27,15 @@ public class ChatService {
         this.chatMessageRepository = chatMessageRepository;
     }
 
-    public Chat createChat(Chat chat) {
+    public ChatService(ChatRepository chatRepository, ChatMessageRepository chatMessageRepository,
+			NotificationService notificationService) {
+		this.chatRepository = chatRepository;
+		this.chatMessageRepository = chatMessageRepository;
+		this.notificationService = notificationService;
+				
+	}
+
+	public Chat createChat(Chat chat) {
         Chat cht= chatRepository.save(chat);
         Notification notification = new Notification();
         notification.setUser(chat.getUser());
