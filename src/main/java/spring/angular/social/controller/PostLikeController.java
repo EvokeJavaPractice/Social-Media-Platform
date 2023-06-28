@@ -16,7 +16,11 @@ public class PostLikeController {
     @Autowired
     private PostLikeService likeService;
 
-    @PostMapping
+    public PostLikeController(PostLikeService likeService) {
+		this.likeService = likeService;
+	}
+
+	@PostMapping
     public ResponseEntity<PostLike> createPostLike(@RequestBody PostLike like) {
         PostLike createdPostLike = likeService.createPostLike(like);
         return ResponseEntity.ok(createdPostLike);

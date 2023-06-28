@@ -34,7 +34,14 @@ public class PostController {
     private UserService userService;
 
 
-    @PostMapping
+    public PostController(PostService postService, UserService userService) {
+    	
+    	this.postService = postService;
+    	this.userService = userService;
+    	
+	}
+
+	@PostMapping
     public ResponseEntity<Post> savePost(@RequestBody Post post) {
         return ResponseEntity.ok(postService.save(post));
     }

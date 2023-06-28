@@ -25,7 +25,11 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    @GetMapping("/{profileId}")
+    public ProfileController(ProfileService profileService) {
+		this.profileService = profileService;
+	}
+
+	@GetMapping("/{profileId}")
     public ResponseEntity<Profile> getProfile(@PathVariable Long profileId) {
         Profile profile = profileService.getProfile(profileId);
         return ResponseEntity.ok(profile);

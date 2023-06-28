@@ -24,7 +24,11 @@ public class ChatController {
     private  ChatService chatService;
 
 
-    @PostMapping
+    public ChatController(ChatService chatService) {
+		this.chatService = chatService;
+	}
+
+	@PostMapping
     public ResponseEntity<Chat> createChat(@RequestBody Chat chat) {
         Chat createdChat = chatService.createChat(chat);
         return ResponseEntity.ok(createdChat);
