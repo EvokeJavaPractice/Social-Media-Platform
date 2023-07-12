@@ -34,11 +34,6 @@ public class PostController {
     private UserService userService;
 
 
-    @PostMapping
-    public ResponseEntity<Post> savePost(@RequestBody Post post) {
-        return ResponseEntity.ok(postService.save(post));
-    }
-
     @GetMapping("/{username}")
     public ResponseEntity<List<Post>> getPostsByUser(@PathVariable String username) {
         User user = userService.findByUsername(username);

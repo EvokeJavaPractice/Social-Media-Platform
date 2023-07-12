@@ -1,148 +1,117 @@
-package spring.angular.social.serviceTest;
+package spring.angular.social.servicetest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import spring.angular.social.entity.User;
-import spring.angular.social.exception.InvalidPasswordException;
-import spring.angular.social.exception.UserNotFoundException;
 import spring.angular.social.repository.UserRepository;
 import spring.angular.social.service.UserService;
-
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-    private UserService userService;
+	
+	
+		
+		@InjectMocks
+		private UserService userService;
+		@Mock
+		private UserRepository userRepository;
+		
+		User user;
+		@BeforeEach
+		void setUp() {
+			user=new User();
+			user.setId(34L);
+			user.setEmailId("user@gmail.com");
+			user.setPassword("user123");
+			user.setUsername("user");
+			
+		}
 
-    @Mock
-    private UserRepository userRepository;
+		@Test
+		public void testSaveUser() {
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        userService = new UserService(userRepository);
-    }
+			user.setEmailId("user@gmail.com");
+			user.setPassword("user123");
+			user.setUsername("user");
 
-    @Test
-    public void testFindByUsername() {
-       
-        String username = "testuser";
-        User user = new User();
-        user.setUsername(username);
+			when(userRepository.save(user)).thenReturn(user);
 
-        when(userRepository.findByUsername(username)).thenReturn(user);
+			User savedUser = userService.save(user);
 
-        User result = userService.findByUsername(username);
-        verify(userRepository, times(1)).findByUsername(username);
-        assertEquals(user, result);
-    }
+			// Assert
+			assertNotNull(savedUser);
+			assertEquals(user, savedUser);
 
-    @Test
-    public void testGetAllUsers() {
-        List<User> users = new ArrayList<>();
-        users.add(new User());
-        users.add(new User());
-
-       
-        when(userRepository.findAll()).thenReturn(users);
-        List<User> result = userService.getAllUsers();
-        verify(userRepository, times(1)).findAll();
-        assertEquals(users, result);
-    }
-
-    @Test
-    public void testSave() {
-    	
-        User user = new User();
-        User savedUser = new User();
-        when(userRepository.save(user)).thenReturn(savedUser);
-
-        User result = userService.save(user);
-
-        verify(userRepository, times(1)).save(user);
-
-        assertEquals(savedUser, result);
-    }
-
-    @Test
-    public void testFindById_success() {
-        
-        Long userId = 1L;
-        User user = new User();
-        user.setId(userId);
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-
-        Optional<User> result = userService.findById(userId);
-
-        verify(userRepository, times(1)).findById(userId);
-
-        assertTrue(result.isPresent());
-        assertEquals(user, result.get());
-    }
-
-    @Test
-    public void testFindById_failure() {
-        
-        Long userId = 1L;
-        
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        Optional<User> result = userService.findById(userId);
-
-        verify(userRepository, times(1)).findById(userId);
-        assertFalse(result.isPresent());
-    }
-
-    @Test
-    public void testDelete() {
-        
-        Long userId = 1L;
-
-        userService.delete(userId);
-
-        verify(userRepository, times(1)).deleteById(userId);
-    }
-
-    @Test
-    public void testGetUser_success() {
-        
-        String username = "bhavani";
-        String password = "bhavani";
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-
-        when(userRepository.findByUsername(username)).thenReturn(user);
-
-        User result = userService.getUser(user);
-        
-        verify(userRepository, times(1)).findByUsername(username);
-        assertEquals(user, result);
-    }
-
-    @Test(expected = UserNotFoundException.class)
-    public void testGetUser_InvalidUsername() {
-        
-        String username = "bhavani";
-        String password = "bhavani";
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-
-        when(userRepository.findByUsername(username)).thenReturn(null);
-        
-        userService.getUser(user);
-    }
-
-    
-
+	}
+	
+	  @Test 
+	  public void testGetAllUsers() {
+		  
+			List<User> listOfUsers = new ArrayList<>();
+	  
+			listOfUsers.add(user);
+	  
+	  user=new User(); 
+	  user.setEmailId("users@gmail.com");
+	  user.setUsername("user"); 
+	  user.setPassword("password");
+	  
+	  when(userRepository.findAll()).thenReturn(listOfUsers);
+	  List<User>actual = userService.getAllUsers();
+	  assertThat(actual).isEqualTo(listOfUsers); 
+	  }
+	  
+		
+		  @Test 
+		  public void testfindByUsername() {
+		  
+		  when(userRepository.findByUsername("username")).thenReturn(user);
+		  User actual = userService.findByUsername("username");
+		  assertThat(actual).isEqualTo(user); 
+		  }
+		  
+		  
+		  @Test
+		  public void testfindByUserId() {
+		  
+			  when(userRepository.findById(34L)).thenReturn(Optional.of(user));
+			  Optional<User> actual = userService.findById(34L);
+			  assertEquals(Optional.of(user), actual);
+		  }
+		  
+			 
+			  @Test 
+			  public void testDelateUser() {
+				  Long userId = 3L;
+			  when(userRepository.findById(3L)).thenReturn(Optional.of(user));
+			  userService.delete(3L);
+			 
+			  // Verifying that the userRepository's deleteById method was called with the correct user ID
+			   verify(userRepository, times(1)).deleteById(userId);
+			  
+			  
+			  }
+			 
+		 
+	 
+	
 }

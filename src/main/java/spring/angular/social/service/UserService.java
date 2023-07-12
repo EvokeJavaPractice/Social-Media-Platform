@@ -6,14 +6,19 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import spring.angular.social.entity.FriendConnection;
 import spring.angular.social.entity.User;
 import spring.angular.social.exception.InvalidPasswordException;
 import spring.angular.social.exception.UserNotFoundException;
+import spring.angular.social.repository.FriendConnectionRepository;
 import spring.angular.social.repository.UserRepository;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    
+    @Autowired
+    private FriendConnectionRepository friendConnectionRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -40,6 +45,9 @@ public class UserService {
 		 userRepository.deleteById(id);
 	}
 
+	public Optional<FriendConnection> findFriendConnectionByUsers(Long userId, Long friendId) {
+        return friendConnectionRepository.findByUser_IdAndFriend_Id(userId, friendId);
+    }
 	public User getUser(User user) {
 		String username= user.getUsername();
 		String password = user.getPassword();
