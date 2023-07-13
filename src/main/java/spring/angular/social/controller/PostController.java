@@ -34,14 +34,7 @@ public class PostController {
     private UserService userService;
 
 
-    public PostController(PostService postService, UserService userService) {
-    	
-    	this.postService = postService;
-    	this.userService = userService;
-    	
-	}
-
-	@PostMapping
+    @PostMapping
     public ResponseEntity<Post> savePost(@RequestBody Post post) {
         return ResponseEntity.ok(postService.save(post));
     }
@@ -65,11 +58,6 @@ public class PostController {
     public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody Post post) {
         Post pst = postService.update(postId, post);
         return ResponseEntity.ok(pst);
-    }
-
-    @PostMapping
-    public ResponseEntity<PostDto> post(@RequestBody PostDto postDto) {
-        return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
 
     @GetMapping

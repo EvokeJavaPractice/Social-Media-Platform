@@ -13,12 +13,9 @@ import spring.angular.social.service.PostLikeService;
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/api/likes")
 public class PostLikeController {
+
     @Autowired
     private PostLikeService likeService;
-
-    public PostLikeController(PostLikeService likeService) {
-		this.likeService = likeService;
-	}
 
 	@PostMapping
     public ResponseEntity<PostLike> createPostLike(@RequestBody PostLike like) {
@@ -39,7 +36,7 @@ public class PostLikeController {
         if (optionalPostLike.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
+
         PostLike like = optionalPostLike.get();
         return ResponseEntity.ok(like);
     }
@@ -51,7 +48,7 @@ public class PostLikeController {
         if (deleted) {
             return ResponseEntity.noContent().build();
         }
-        
+
         return ResponseEntity.notFound().build();
     }
 }

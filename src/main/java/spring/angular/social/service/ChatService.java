@@ -16,24 +16,16 @@ import spring.angular.social.repository.ChatRepository;
 
 @Service
 public class ChatService {
-    private final ChatRepository chatRepository;
-    private final ChatMessageRepository chatMessageRepository;
+
+    @Autowired
+    private  ChatRepository chatRepository;
+
+    @Autowired
+    private  ChatMessageRepository chatMessageRepository;
     
     @Autowired
     private NotificationService notificationService;
 
-    public ChatService(ChatRepository chatRepository, ChatMessageRepository chatMessageRepository) {
-        this.chatRepository = chatRepository;
-        this.chatMessageRepository = chatMessageRepository;
-    }
-
-    public ChatService(ChatRepository chatRepository, ChatMessageRepository chatMessageRepository,
-			NotificationService notificationService) {
-		this.chatRepository = chatRepository;
-		this.chatMessageRepository = chatMessageRepository;
-		this.notificationService = notificationService;
-				
-	}
 
 	public Chat createChat(Chat chat) {
         Chat cht= chatRepository.save(chat);

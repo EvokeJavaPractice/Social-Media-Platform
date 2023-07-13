@@ -12,21 +12,14 @@ import spring.angular.social.repository.PostLikeRepository;
 
 @Service
 public class PostLikeService {
-    private final PostLikeRepository likeRepository;
+
+    @Autowired
+    private PostLikeRepository likeRepository;
     
     @Autowired
     private NotificationService notificationService;
     
-    public PostLikeService(PostLikeRepository likeRepository) {
-        this.likeRepository = likeRepository;
-    }
-    
-    public PostLikeService(PostLikeRepository likeRepository, NotificationService notificationService) {
-		this.likeRepository = likeRepository;
-		this.notificationService = notificationService;
-	}
-
-	public PostLike createPostLike(PostLike like) {
+   	public PostLike createPostLike(PostLike like) {
         PostLike pl = likeRepository.save(like);
         Notification notification = new Notification();
         notification.setUser(like.getUser());

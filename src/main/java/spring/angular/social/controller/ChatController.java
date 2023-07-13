@@ -20,13 +20,9 @@ import spring.angular.social.service.ChatService;
 @RestController
 @RequestMapping("/api/chats")
 public class ChatController {
+
     @Autowired
     private  ChatService chatService;
-
-
-    public ChatController(ChatService chatService) {
-		this.chatService = chatService;
-	}
 
 	@PostMapping
     public ResponseEntity<Chat> createChat(@RequestBody Chat chat) {
