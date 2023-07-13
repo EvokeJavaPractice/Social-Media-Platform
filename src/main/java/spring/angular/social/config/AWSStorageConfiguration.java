@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 @Configuration
-public class StorageImageConfig {
+public class AWSStorageConfiguration {
 	
 	@Value("${aws.accessKey}")
 	private String accessKey;
@@ -21,7 +21,7 @@ public class StorageImageConfig {
 	private String region;
 	
 	@Bean
-	public AmazonS3 genarateS3client() {
+	public AmazonS3 genarateS3Client() {
 		AWSCredentials credentials=new BasicAWSCredentials(accessKey, accessSecret);
 		return AmazonS3ClientBuilder.standard()
 				.withCredentials(new AWSStaticCredentialsProvider(credentials))

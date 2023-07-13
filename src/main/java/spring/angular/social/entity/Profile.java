@@ -30,12 +30,6 @@ public class Profile {
     private User user;
 	private String fullName;
     private String bio;
-    
-//    @Lob
-//    @Type(type = "org.hibernate.type.BinaryType")
-//    @Column(name = "profile_image", columnDefinition = "BLOB")
-//    private byte[] profileImage;
-
     @Column(name = "profile_image")
     private String profileImage;
 

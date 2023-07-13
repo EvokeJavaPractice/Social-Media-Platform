@@ -3,6 +3,7 @@ package spring.angular.social.exception;
 import java.util.Date;
 
 import lombok.extern.apachecommons.CommonsLog;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -35,6 +36,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("MessageNotFoundException exception caught.", ex);
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorResponse handleException(DataIntegrityViolationException ex) {
+        log.error("MessageNotFoundException exception caught.", ex);
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getRootCause().getMessage());
+    }
+
+
 
     @ExceptionHandler(value = ProfileNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
