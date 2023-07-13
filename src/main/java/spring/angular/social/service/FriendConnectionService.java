@@ -14,7 +14,6 @@ import spring.angular.social.repository.FriendConnectionRepository;
 @Service
 public class FriendConnectionService {
     private final FriendConnectionRepository friendConnectionRepository;
-    
 
     @Autowired
     private NotificationService notificationService;
@@ -113,8 +112,7 @@ public class FriendConnectionService {
     }
 
 	public void setFriendConnections(Map<Integer, List<Integer>> friendConnections) {
-		
-		
+
 	}
 
 	public void setNotificationService(NotificationService notificationService) {

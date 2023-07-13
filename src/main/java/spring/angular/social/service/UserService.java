@@ -46,7 +46,7 @@ public class UserService {
 	}
 
 	public Optional<FriendConnection> findFriendConnectionByUsers(Long userId, Long friendId) {
-        return friendConnectionRepository.findByUser_IdAndFriend_Id(userId, friendId);
+        return friendConnectionRepository.findByUserIdAndFriendId(userId, friendId);
     }
 	public User getUser(User user) {
 		String username= user.getUsername();

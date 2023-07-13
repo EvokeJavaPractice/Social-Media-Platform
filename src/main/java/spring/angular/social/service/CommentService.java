@@ -15,11 +15,9 @@ import spring.angular.social.repository.CommentRepository;
 public class CommentService {
 	
     private final CommentRepository commentRepository;
-    
 
     @Autowired
     private NotificationService notificationService;
-    
 
     public CommentService(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;

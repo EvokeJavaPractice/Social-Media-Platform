@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import spring.angular.social.entity.User;
 import spring.angular.social.service.UserService;
+
 @CrossOrigin("http://localhost:4200")
 @RestController
 @RequestMapping("/api/users")
@@ -26,17 +27,17 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    
+
     @PostMapping
-    public ResponseEntity<User> saveUser(@RequestBody User user){
-    	User usr = userService.save(user);
-    	 return ResponseEntity.status(HttpStatus.CREATED).body(usr);
+    public ResponseEntity<User> saveUser(@RequestBody User user) {
+        User usr = userService.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usr);
     }
-    
+
     @PostMapping("/login")
-    public ResponseEntity<User> getUser(@RequestBody User user){
-    	User usr = userService.getUser(user);
-    	 return ResponseEntity.status(HttpStatus.OK).body(usr);
+    public ResponseEntity<User> getUser(@RequestBody User user) {
+        User usr = userService.getUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(usr);
     }
 
     @GetMapping
@@ -50,12 +51,11 @@ public class UserController {
         User user = userService.findByUsername(username);
         return ResponseEntity.ok(user);
     }
-    
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id)
-    {
-    	userService.delete(id);
-    	return ResponseEntity.ok("user deleted");
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.ok("user deleted");
     }
-    
+
 }

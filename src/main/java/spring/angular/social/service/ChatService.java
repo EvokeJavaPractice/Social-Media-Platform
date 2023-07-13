@@ -26,7 +26,6 @@ public class ChatService {
     @Autowired
     private NotificationService notificationService;
 
-
 	public Chat createChat(Chat chat) {
         Chat cht= chatRepository.save(chat);
         Notification notification = new Notification();
