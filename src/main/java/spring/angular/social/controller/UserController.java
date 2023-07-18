@@ -21,12 +21,9 @@ import spring.angular.social.service.UserService;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity<User> saveUser(@RequestBody User user) {

@@ -3,6 +3,7 @@ package spring.angular.social.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +14,9 @@ import spring.angular.social.service.CommentService;
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/api/comments")
 public class CommentController {
-    private final CommentService commentService;
 
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
+    @Autowired
+    private CommentService commentService;
 
     @PostMapping
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {

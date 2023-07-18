@@ -16,14 +16,12 @@ import spring.angular.social.service.UserService;
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/api/friendConnections")
 public class FriendConnectionController {
-    private final FriendConnectionService friendConnectionService;
-    private final UserService userService;
 
     @Autowired
-    public FriendConnectionController(FriendConnectionService friendConnectionService, UserService userService) {
-        this.friendConnectionService = friendConnectionService;
-        this.userService = userService;
-    }
+    private FriendConnectionService friendConnectionService;
+    @Autowired
+    private UserService userService;
+
 
 	/*
 	 * @PostMapping public ResponseEntity<FriendConnection>
