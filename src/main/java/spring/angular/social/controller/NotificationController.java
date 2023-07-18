@@ -26,10 +26,6 @@ public class NotificationController {
     @Autowired
     private  NotificationService notificationService;
 
-    public NotificationController(NotificationService notificationService) {
-		this.notificationService = notificationService;
-	}
-
 	@PostMapping
     public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
         Notification createdNotification = notificationService.createNotification(notification);

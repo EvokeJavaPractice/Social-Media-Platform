@@ -42,14 +42,11 @@ import spring.angular.social.util.JwtUtils;
 @RequestMapping("/api/users")
 public class UserController {
 
-	private final UserService userService;
 
-	@Autowired
-	public UserController(UserService userService) {
-		this.userService = userService;
-	}
-
-	@Autowired
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
