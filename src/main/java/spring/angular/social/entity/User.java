@@ -17,13 +17,23 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="social_user")
 public class User {
-	 	@Id
+
+		@Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
-	 	private String emailId;
+	 
 	 	@Column(nullable = false, unique = true)
 	    private String username;
+	 	
+		private String email;
+		
 	    @Column(nullable = false)
 	    private String password;
 
+		public User(String username, String email, String password) {
+			super();
+			this.username = username;
+			this.email = email;
+			this.password = password;
+		}
 }
