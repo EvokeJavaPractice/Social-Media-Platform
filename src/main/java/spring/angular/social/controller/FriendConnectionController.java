@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import spring.angular.social.dto.FriendConnectionDto;
 import spring.angular.social.entity.FriendConnection;
 import spring.angular.social.entity.User;
+import spring.angular.social.mappers.FriendConnectionMapper;
 import spring.angular.social.service.FriendConnectionService;
 import spring.angular.social.service.UserService;
 
@@ -22,6 +24,8 @@ public class FriendConnectionController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private FriendConnectionMapper mapper;
 
 	/*
 	 * @PostMapping public ResponseEntity<FriendConnection>
@@ -52,12 +56,12 @@ public class FriendConnectionController {
 	 */
     
     @PostMapping
-    public ResponseEntity<FriendConnection> createFriendConnection(@RequestParam("userId") Long userId,
-                                                                   @RequestParam("friendId") Long friendId) {
+    public ResponseEntity<FriendConnectionDto> createFriendConnection(@RequestParam("userId") Long userId,
+                                                                      @RequestParam("friendId") Long friendId) {
        
         
         FriendConnection connection = friendConnectionService.createFriendConnection(userId, friendId);
-        return ResponseEntity.ok(connection);
+        return ResponseEntity.ok(mapper.toDto(connection));
     }
 
 

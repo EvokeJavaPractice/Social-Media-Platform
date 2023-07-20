@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import spring.angular.social.dto.PostLikeDto;
 import spring.angular.social.entity.PostLike;
+import spring.angular.social.mappers.PostLIkeMapper;
 import spring.angular.social.service.PostLikeService;
 
 @RestController
@@ -17,10 +19,13 @@ public class PostLikeController {
     @Autowired
     private PostLikeService likeService;
 
+    @Autowired
+    private PostLIkeMapper mapper;
+
 	@PostMapping
-    public ResponseEntity<PostLike> createPostLike(@RequestBody PostLike like) {
+    public ResponseEntity<PostLikeDto> createPostLike(@RequestBody PostLike like) {
         PostLike createdPostLike = likeService.createPostLike(like);
-        return ResponseEntity.ok(createdPostLike);
+        return ResponseEntity.ok(mapper.toDto(createdPostLike));
     }
 
     @GetMapping("/post/{postId}/count")
@@ -30,7 +35,7 @@ public class PostLikeController {
     }
     
     @GetMapping("/{likeId}")
-    public ResponseEntity<PostLike> getPostLikeById(@PathVariable Long likeId) {
+    public ResponseEntity<PostLikeDto> getPostLikeById(@PathVariable Long likeId) {
         Optional<PostLike> optionalPostLike = likeService.getPostLikeById(likeId);
         
         if (optionalPostLike.isEmpty()) {
@@ -38,7 +43,7 @@ public class PostLikeController {
         }
 
         PostLike like = optionalPostLike.get();
-        return ResponseEntity.ok(like);
+        return ResponseEntity.ok(mapper.toDto(like));
     }
     
     @DeleteMapping("/{likeId}")

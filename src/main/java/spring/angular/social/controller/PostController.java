@@ -7,6 +7,7 @@ import spring.angular.social.constants.AppConstants;
 import spring.angular.social.dto.PostDto;
 import spring.angular.social.entity.Post;
 import spring.angular.social.entity.User;
+import spring.angular.social.mappers.PostMapper;
 import spring.angular.social.service.PostService;
 import spring.angular.social.service.UserService;
 
@@ -22,12 +23,14 @@ public class PostController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PostMapper mapper;
 
     @GetMapping("/{username}")
-    public ResponseEntity<List<Post>> getPostsByUser(@PathVariable String username) {
+    public ResponseEntity<List<PostDto>> getPostsByUser(@PathVariable String username) {
         User user = userService.findByUsername(username);
         List<Post> posts = postService.getUserPosts(user);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(mapper.toDto(posts));
     }
 
     @DeleteMapping("/{id}")
@@ -37,9 +40,9 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long postId, @RequestBody Post post) {
+    public ResponseEntity<PostDto> updatePost(@PathVariable Long postId, @RequestBody Post post) {
         Post pst = postService.update(postId, post);
-        return ResponseEntity.ok(pst);
+        return ResponseEntity.ok(mapper.toDto(pst));
     }
 
     @GetMapping
