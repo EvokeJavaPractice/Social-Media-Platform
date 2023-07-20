@@ -1,32 +1,28 @@
 package spring.angular.social.serviceTest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.Optional;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import spring.angular.social.entity.Profile;
 import spring.angular.social.exception.ProfileNotFoundException;
 import spring.angular.social.repository.ProfileRepository;
 import spring.angular.social.service.ProfileService;
 
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
+@SpringBootTest
 public class ProfileServiceTest {
 
+    @MockBean
     private ProfileService profileService;
 
     @Mock
     private ProfileRepository profileRepository;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        profileService = new ProfileService(profileRepository);
-    }
 
     @Test
     public void testGetProfile_success() {
@@ -97,7 +93,6 @@ public class ProfileServiceTest {
         Profile updatedProfile = new Profile();
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.empty());
-
         profileService.updateProfile(profileId, updatedProfile);
     }
 

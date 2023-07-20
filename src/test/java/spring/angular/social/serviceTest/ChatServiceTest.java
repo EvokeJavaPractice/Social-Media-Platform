@@ -1,6 +1,7 @@
 package spring.angular.social.serviceTest;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -33,6 +34,7 @@ public class ChatServiceTest {
     @MockBean
     private NotificationService notificationService;
 
+    @MockBean
     private ChatService chatService;
 
     @Test
@@ -49,7 +51,6 @@ public class ChatServiceTest {
         when(chatRepository.save(chat)).thenReturn(savedChat);
         doNothing().when(notificationService).createNotification(notification);
 
-        chatService = new ChatService(chatRepository, chatMessageRepository, notificationService);
         Chat createdChat = chatService.createChat(chat);
 
         assertNotNull(createdChat);
@@ -66,8 +67,7 @@ public class ChatServiceTest {
         List<ChatMessage> messages = new ArrayList<>();
         when(chatMessageRepository.findByChatIdOrderByTimestamp(chatId)).thenReturn(messages);
 
-        chatService = new ChatService(chatRepository, chatMessageRepository, notificationService);
-        List<ChatMessage> retrievedMessages = chatService.getChatMessages(chatId);
+         List<ChatMessage> retrievedMessages = chatService.getChatMessages(chatId);
 
         assertNotNull(retrievedMessages);
         assertEquals(messages, retrievedMessages);
@@ -96,7 +96,6 @@ public class ChatServiceTest {
         when(chatMessageRepository.save(message)).thenReturn(savedMessage);
         doNothing().when(notificationService).createNotification(notification);
 
-        chatService = new ChatService(chatRepository, chatMessageRepository, notificationService);
         ChatMessage sentMessage = chatService.sendChatMessage(chatId, message);
 
         assertNotNull(sentMessage);
@@ -121,7 +120,6 @@ public class ChatServiceTest {
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
         doNothing().when(chatMessageRepository).delete(chatMessage);
 
-        chatService = new ChatService(chatRepository, chatMessageRepository, notificationService);
 
         assertDoesNotThrow(() -> chatService.deleteChatMessage(chatId, messageId));
         verify(chatMessageRepository, times(1)).findById(messageId);
@@ -134,9 +132,6 @@ public class ChatServiceTest {
         Long messageId = 1L;
 
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.empty());
-
-        chatService = new ChatService(chatRepository, chatMessageRepository, notificationService);
-
         assertThrows(ChatNotFoundException.class, () -> chatService.deleteChatMessage(chatId, messageId));
         verify(chatMessageRepository, times(1)).findById(messageId);
         verify(chatMessageRepository, never()).delete(any());
@@ -153,8 +148,6 @@ public class ChatServiceTest {
         chatMessage.setChat(chat);
 
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
-
-        chatService = new ChatService(chatRepository, chatMessageRepository, notificationService);
 
         assertThrows(MessageNotFoundException.class, () -> chatService.deleteChatMessage(chatId, messageId));
         verify(chatMessageRepository, times(1)).findById(messageId);

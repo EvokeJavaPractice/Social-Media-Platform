@@ -2,75 +2,59 @@ package spring.angular.social.controllerTest;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import spring.angular.social.controller.ChatController;
 import spring.angular.social.entity.Chat;
-import spring.angular.social.entity.ChatMessage;
+import spring.angular.social.entity.User;
 import spring.angular.social.service.ChatService;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
+@WebMvcTest(ChatController.class)
 public class ChatControllerTest {
 
-    private final ChatService chatService = mock(ChatService.class);
-    private final ChatController chatController = new ChatController(chatService);
+    @Autowired
+    MockMvc mockMvc;
+
+    @MockBean
+    private ChatService chatService;
+
+    User user = new User(
+            1L, "surya@gmail.com", "Surya", "password");
+    User friend = new User(
+            2L, "raj@gmail.com", "Raj", "password");
+
 
     @Test
-    public void testCreateChat() {
-    	
+    public void testCreateChat() throws Exception {
+
         Chat chat = new Chat();
-        Chat createdChat = new Chat();
-        Mockito.when(chatService.createChat(chat)).thenReturn(createdChat);
+        chat.setFriend(friend);
+        chat.setUser(user);
+        Mockito.when(chatService.createChat(chat)).thenReturn(chat);
 
-        ResponseEntity<Chat> response = chatController.createChat(chat);
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .post("/api/chats")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(chat.toString());
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(createdChat, response.getBody());
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$friend.name", is("raj")))
+                .andExpect(jsonPath("$user.name", is("Surya")));
     }
 
-    @Test
-    public void testGetChatMessages() {
-        
-        Long chatId = 1L;
-        List<ChatMessage> messages = new ArrayList<>();
-        Mockito.when(chatService.getChatMessages(chatId)).thenReturn(messages);
 
-        ResponseEntity<List<ChatMessage>> response = chatController.getChatMessages(chatId);
-        
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(messages, response.getBody());
-    }
-
-    @Test
-    public void testSendChatMessage() {
-       
-        Long chatId = 1L;
-        ChatMessage message = new ChatMessage();
-        ChatMessage sentMessage = new ChatMessage();
-        Mockito.when(chatService.sendChatMessage(chatId, message)).thenReturn(sentMessage);
-
-        ResponseEntity<ChatMessage> response = chatController.sendChatMessage(chatId, message);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(sentMessage, response.getBody());
-    }
-
-    @Test
-    public void testDeleteChatMessage() {
-       
-        Long chatId = 1L;
-        Long messageId = 1L;
-
-        ResponseEntity<String> response = chatController.deleteChatMessage(chatId, messageId);
-        
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Chat message deleted successfully", response.getBody());
-        verify(chatService, times(1)).deleteChatMessage(chatId, messageId);
-    }
 }

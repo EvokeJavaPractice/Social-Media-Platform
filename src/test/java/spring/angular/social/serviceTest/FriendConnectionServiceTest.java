@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import org.springframework.boot.test.mock.mockito.MockBean;
 import spring.angular.social.entity.FriendConnection;
 import spring.angular.social.entity.Notification;
 import spring.angular.social.entity.User;
@@ -30,18 +31,19 @@ import spring.angular.social.service.FriendConnectionService;
 import spring.angular.social.service.NotificationService;
 
 public class FriendConnectionServiceTest {
-	
-	private FriendConnectionService friendConnectionService;
 
-    @Mock
+    @MockBean
+    private FriendConnectionService friendConnectionService;
+
+    @MockBean
     private FriendConnectionRepository friendConnectionRepository;
 
-    @Mock
+    @MockBean
     private NotificationService notificationService;
 
     @Before
     public void setup() {
-    	
+
         MockitoAnnotations.initMocks(this);
         friendConnectionService = new FriendConnectionService(friendConnectionRepository);
         friendConnectionService.setNotificationService(notificationService);
@@ -50,7 +52,7 @@ public class FriendConnectionServiceTest {
 
     @Test
     public void testCreateFriendConnection() {
-        
+
         User user = new User();
         User friend = new User();
         FriendConnection friendConnection = new FriendConnection();
@@ -58,15 +60,10 @@ public class FriendConnectionServiceTest {
         friendConnection.setFriend(friend);
         LocalDateTime now = LocalDateTime.now();
 
-        
         when(friendConnectionRepository.save(friendConnection)).thenReturn(friendConnection);
-
-        FriendConnection result = friendConnectionService.createFriendConnection(user, friend);
-        
+        FriendConnection result = friendConnectionService.createFriendConnection(user.getId(), friend.getId());
         verify(notificationService, times(1)).createNotification(any(Notification.class));
-
         assertEquals(friendConnection, result);
-
         Notification notification = friendConnection.getNotification();
         assertNotNull(notification);
         assertEquals(friendConnection.getUser(), notification.getUser());
@@ -76,57 +73,49 @@ public class FriendConnectionServiceTest {
 
     @Test
     public void testDeleteFriendConnection() {
-       
+
         FriendConnection friendConnection = new FriendConnection();
-
         friendConnectionService.deleteFriendConnection(friendConnection);
-
         verify(friendConnectionRepository, times(1)).delete(friendConnection);
     }
 
     @Test
     public void testFindById() {
-       
+
         Long id = 1L;
         FriendConnection friendConnection = new FriendConnection();
         friendConnection.setId(id);
-
         when(friendConnectionRepository.findById(id)).thenReturn(Optional.of(friendConnection));
         FriendConnection result = friendConnectionService.findById(id);
         verify(friendConnectionRepository, times(1)).findById(id);
-
         assertEquals(friendConnection, result);
     }
 
     @Test
     public void testFindById_FriendConnectionNotFound() {
-       
+
         Long id = 1L;
         when(friendConnectionRepository.findById(id)).thenReturn(Optional.empty());
         FriendConnection result = friendConnectionService.findById(id);
         verify(friendConnectionRepository, times(1)).findById(id);
-
         assertNull(result);
     }
 
     @Test
     public void testGetFriendCount() {
-       
+
         Long userId = 1L;
         Long friendCount = 5L;
 
         when(friendConnectionRepository.countByUserId(userId)).thenReturn(friendCount);
-
         Long result = friendConnectionService.getFriendCount(userId);
-
         verify(friendConnectionRepository, times(1)).countByUserId(userId);
-
         assertEquals(friendCount, result);
     }
 
     @Test
     public void testGetFriendNames() {
-      
+
         Long userId = 1L;
         List<FriendConnection> connections = new ArrayList<>();
         User friend1 = new User();
@@ -137,9 +126,7 @@ public class FriendConnectionServiceTest {
         connections.add(createFriendConnection(userId, friend2));
 
         when(friendConnectionRepository.findByUserId(userId)).thenReturn(connections);
-
         List<String> result = friendConnectionService.getFriendNames(userId);
-
         verify(friendConnectionRepository, times(1)).findByUserId(userId);
 
         assertEquals(2, result.size());
@@ -149,7 +136,7 @@ public class FriendConnectionServiceTest {
 
     @Test
     public void testIsFriend_ExistingFriendConnection() {
-       
+
         int userId = 1;
         int friendId = 2;
         List<Integer> friends = new ArrayList<>();
@@ -158,9 +145,7 @@ public class FriendConnectionServiceTest {
         friendConnections.put(userId, friends);
 
         friendConnectionService.setFriendConnections(friendConnections);
-
         boolean result = friendConnectionService.isFriend(userId, friendId);
-
         assertTrue(result);
     }
 
@@ -176,10 +161,8 @@ public class FriendConnectionServiceTest {
         assertFalse(result);
     }
 
-
     private FriendConnection createFriendConnection(Long userId, User friend) {
         FriendConnection connection = new FriendConnection();
-       // connection.setUser(new User(userId));
         connection.setFriend(friend);
         return connection;
     }

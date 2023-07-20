@@ -1,110 +1,83 @@
 package spring.angular.social.controllerTest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import spring.angular.social.controller.ProfileController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 import spring.angular.social.entity.Profile;
 import spring.angular.social.service.ProfileService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ProfileControllerTest {
 
-    private final ProfileService profileService = mock(ProfileService.class);
-    private final ProfileController profileController = new ProfileController(profileService);
+    @MockBean
+    private ProfileService profileService;
+
+    @Autowired
+    MockMvc mockMvc;
+
 
     @Test
-    public void testGetProfile() {
-    	
-    	Long profileId = 1L;
+    public void testGetProfile() throws Exception {
+        Long profileId = 1L;
         Profile profile = new Profile();
-        when(profileService.getProfile(profileId)).thenReturn(profile);
-        
-        ResponseEntity<Profile> expectedResult = profileController.getProfile(profileId);
-        
-        assertEquals(expectedResult.getStatusCode(),HttpStatus.OK);
-        ;
-        
-        
+        doReturn(profile).when(profileService).getProfile(profileId);
+
+        mockMvc.perform(get("/profiles/{id}", profileId))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(profile)));
     }
-    
+
+
     @Test
-    public void testGetProfileByUserId_success() {
-    	
-    	Long userId=1L;
+    public void testGetProfileByUserId_success() throws Exception {
+
+        Long userId = 1L;
         Profile profile = new Profile();
-        when(profileService.getProfileByUserId(userId)).thenReturn(profile);
-        
-        ResponseEntity<Profile> expectedResult = profileController.getProfileByUserId(userId);
-        
-        assertEquals(expectedResult.getStatusCode(),HttpStatus.OK);
-        assertEquals(expectedResult.getBody(),profile);
-        
-        
+        doReturn(profile).when(profileService).getProfileByUserId(userId);
+
+        mockMvc.perform(get("/profiles/users/{id}", userId))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(profile)));
     }
-    
+
     @Test
-    public void testGetProfileByUserId_failure() {
-    	
-    	Long userId=1L;
-        Profile profile = null;
-        when(profileService.getProfileByUserId(userId)).thenReturn(profile);
-        
-        ResponseEntity<Profile> expectedResult = profileController.getProfileByUserId(userId);
-        
-        assertEquals(expectedResult.getStatusCode(),HttpStatus.NOT_FOUND);
-        assertEquals(expectedResult.getBody(),null);
-        
-        
+    public void testCreateProfile() throws Exception {
+        Profile profile = new Profile();
+        doReturn(profile).when(profileService).createProfile(profile);
+
+        mockMvc.perform(post("/profiles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(profile)))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(profile)));
     }
-    
+
     @Test
-    public void testCreateProfile() {
-    	
-    	Profile profile = new Profile();
-    	when(profileService.createProfile(profile)).thenReturn(profile);
-        
-    	ResponseEntity<Profile> expectedResult = profileController.createProfile(profile);
-    	
-    	assertEquals(expectedResult.getStatusCode(),HttpStatus.CREATED);
-    	assertEquals(expectedResult.getBody(),profile);
-        
+    public void testUpdateProfile() throws Exception {
+        Long profileId = 1L;
+        Profile profile = new Profile();
+        doReturn(profile).when(profileService).updateProfile(profileId, profile);
+
+        mockMvc.perform(put("/profiles/{id}", profileId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(profile)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(profile)));
     }
-    
+
     @Test
-    public void testUpdateProfile() {
-    	
-    	Long profileId = 1L;
-    	Profile profile = new Profile();
-    	
-    	when(profileService.updateProfile(profileId, profile)).thenReturn(profile);
-    	ResponseEntity<Profile>  expectedResult = profileController.updateProfile(profileId, profile) ;
-        
-    	assertEquals(expectedResult.getStatusCode(),HttpStatus.OK);
-    	assertEquals(expectedResult.getBody(),profile);
-    	
-    }
-    
-    @Test
-    public void deleteProfile() {
-    	
-    	Long profileId = 1L;
-    	
-    	ResponseEntity<Void> expectedResult = profileController.deleteProfile(profileId);
-    	
-    	assertEquals(expectedResult.getBody(),null);
-    	verify(profileService, times(1)).deleteProfile(profileId);
-    	
+    public void deleteProfile() throws Exception {
+        Long profileId = 1L;
+        mockMvc.perform(delete("/profiles/{id}", profileId))
+                .andExpect(status().isNoContent());
+        verify(profileService, times(1)).deleteProfile(profileId);
     }
 }
 
