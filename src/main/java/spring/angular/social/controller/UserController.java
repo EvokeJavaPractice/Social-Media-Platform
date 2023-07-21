@@ -1,9 +1,7 @@
 package spring.angular.social.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,33 +11,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.SignatureException;
+import org.springframework.web.bind.annotation.*;
+import spring.angular.social.dto.UserDto;
 import spring.angular.social.entity.User;
 import spring.angular.social.entity.UserDetailsImpl;
 import spring.angular.social.exception.InvalidCredentialsException;
 import spring.angular.social.exception.InvalidTokenException;
+import spring.angular.social.mappers.UserMapper;
 import spring.angular.social.repository.UserRepository;
 import spring.angular.social.securityRequest.LoginRequest;
 import spring.angular.social.securityRequest.SignupRequest;
 import spring.angular.social.securityResponse.JwtResponse;
-import spring.angular.social.securityResponse.MessageResponse;
-
-import spring.angular.social.dto.UserDto;
-import spring.angular.social.mappers.UserMapper;
-
 import spring.angular.social.service.UserService;
 import spring.angular.social.util.JwtUtils;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @CrossOrigin("http://localhost:4200")
 @RestController
@@ -58,11 +45,8 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private PasswordEncoder encoder;
-
-	@Autowired
-	private UserMapper mapper;
+    @Autowired
+    private UserMapper mapper;
 
 //	@PostMapping
 //    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
@@ -94,28 +78,10 @@ public class UserController {
         return ResponseEntity.ok("user deleted");
     }
 
-	@PostMapping("/register")
-	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
-
-		System.out.println("send request from postman" + signupRequest);
-
-		// check username exist
-		if (userRepository.existsByUsername(signupRequest.getUsername())) {
-			return ResponseEntity.badRequest().body(new MessageResponse(" Username already exist"));
-		}
-
-		// check email exist
-		if (userRepository.existsByEmailId(signupRequest.getEmail())) {
-			return ResponseEntity.badRequest().body(new MessageResponse(" EmailId already exist"));
-		}
-		// create user
-		User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),
-				encoder.encode(signupRequest.getPassword()));
-
-		userService.save(user);
-
-		return new ResponseEntity<>(user, HttpStatus.OK);
-	}
+    @PostMapping("/register")
+    public ResponseEntity<User> createUser(@Valid @RequestBody SignupRequest signupRequest) {
+        return new ResponseEntity<>(userService.save(signupRequest), HttpStatus.OK);
+    }
 
 	@PostMapping("/login")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {

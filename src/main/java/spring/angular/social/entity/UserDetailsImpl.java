@@ -1,13 +1,12 @@
 package spring.angular.social.entity;
 
-import java.util.Collection;
-import java.util.Collections;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.util.Collection;
+import java.util.Collections;
 
 @Data
 @AllArgsConstructor
@@ -21,12 +20,7 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
 
     public static UserDetailsImpl build(User user) {
-        return new UserDetailsImpl(
-                user.getId(),
-                user.getUsername(),
-                user.getEmailId(),
-                user.getPassword()
-        );
+        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmailId(), user.getPassword());
     }
 
     @Override

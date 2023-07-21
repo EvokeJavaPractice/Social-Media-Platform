@@ -1,11 +1,12 @@
 package spring.angular.social.exception;
 
-public class ChatNotFoundException extends RuntimeException {
+public class DuplicateAccountException extends RuntimeException {
 
     private String message;
 
-    public ChatNotFoundException(String msg) {
+    public DuplicateAccountException(String msg) {
         super(msg);
         this.message = msg;
     }
+
 }
