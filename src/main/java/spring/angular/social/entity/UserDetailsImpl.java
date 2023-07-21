@@ -17,14 +17,14 @@ public class UserDetailsImpl implements UserDetails {
 
     private Long id;
     private String username;
-    private String email;
+    private String emailId;
     private String password;
 
     public static UserDetailsImpl build(User user) {
         return new UserDetailsImpl(
                 user.getId(),
                 user.getUsername(),
-                user.getEmail(),
+                user.getEmailId(),
                 user.getPassword()
         );
     }

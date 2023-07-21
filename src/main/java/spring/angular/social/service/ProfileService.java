@@ -65,6 +65,7 @@ public class ProfileService {
         }
         String imageUrl = storageService.save(file);
         profile.get().setProfileImage(imageUrl);
+        profileRepository.save(profile.get());
         return profile.get();
     }
 

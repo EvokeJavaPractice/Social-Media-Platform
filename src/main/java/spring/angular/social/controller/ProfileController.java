@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import spring.angular.social.dto.ProfileDto;
 import spring.angular.social.entity.Profile;
+import spring.angular.social.mappers.ProfileMapper;
 import spring.angular.social.service.ProfileService;
 
 @RestController
@@ -16,33 +18,36 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
+    @Autowired
+    private ProfileMapper mapper;
+
     @GetMapping("/{profileId}")
-    public ResponseEntity<Profile> getProfile(@PathVariable Long profileId) {
+    public ResponseEntity<ProfileDto> getProfile(@PathVariable Long profileId) {
 
         Profile profile = profileService.getProfile(profileId);
-        return ResponseEntity.ok(profile);
+        return ResponseEntity.ok(mapper.toDto(profile));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Profile> getProfileByUserId(@PathVariable Long userId) {
+    public ResponseEntity<ProfileDto> getProfileByUserId(@PathVariable Long userId) {
         Profile profile = profileService.getProfileByUserId(userId);
         if (profile != null) {
-            return ResponseEntity.ok(profile);
+            return ResponseEntity.ok(mapper.toDto(profile));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<Profile> createProfile(@RequestBody Profile profile) {
-        Profile createdProfile = profileService.createProfile(profile);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdProfile);
+    public ResponseEntity<ProfileDto> createProfile(@RequestBody ProfileDto profileDto) {
+        Profile createdProfile = profileService.createProfile(mapper.toEntity(profileDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDto(createdProfile));
     }
 
     @PutMapping("/{profileId}")
-    public ResponseEntity<Profile> updateProfile(@PathVariable Long profileId, @RequestBody Profile profile) {
-        Profile updatedProfile = profileService.updateProfile(profileId, profile);
-        return ResponseEntity.ok(updatedProfile);
+    public ResponseEntity<ProfileDto> updateProfile(@PathVariable Long profileId, @RequestBody ProfileDto profileDto) {
+        Profile updatedProfile = profileService.updateProfile(profileId, mapper.toEntity(profileDto));
+        return ResponseEntity.ok(mapper.toDto(updatedProfile));
     }
 
     @DeleteMapping("/{profileId}")
@@ -52,10 +57,11 @@ public class ProfileController {
     }
 
     @PostMapping("/{profileId}/image")
-    public ResponseEntity<Profile> uploadProfileImage(@PathVariable Long profileId,
+    public ResponseEntity<ProfileDto> uploadProfileImage(@PathVariable Long profileId,
                                                      @RequestParam("file") MultipartFile file) {
-        return new ResponseEntity<>(profileService.uploadImage(profileId, file), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.toDto(profileService.uploadImage(profileId, file)), HttpStatus.OK);
     }
+
 
     @DeleteMapping("/{profileId}/image")
     public ResponseEntity<Object> deleteImage(@PathVariable Long profileId) {

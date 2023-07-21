@@ -18,15 +18,15 @@ public class User {
 	 	@Column(nullable = false, unique = true)
 	    private String username;
 	 	
-		private String email;
+		private String emailId;
 		
 	    @Column(nullable = false)
 	    private String password;
 
-		public User(String username, String email, String password) {
+		public User(String username, String emailId, String password) {
 			super();
 			this.username = username;
-			this.email = email;
+			this.emailId = emailId;
 			this.password = password;
 		}
 }

@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import spring.angular.social.dto.CommentDto;
 import spring.angular.social.entity.Comment;
+import spring.angular.social.mappers.CommentMapper;
 import spring.angular.social.service.CommentService;
 
 @RestController
@@ -18,10 +20,12 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private CommentMapper mapper;
     @PostMapping
-    public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
+    public ResponseEntity<CommentDto> createComment(@RequestBody Comment comment) {
         Comment createdComment = commentService.createComment(comment);
-        return ResponseEntity.ok(createdComment);
+        return ResponseEntity.ok(mapper.toDto(createdComment));
     }
 
     @GetMapping("/post/{postId}/count")
@@ -31,12 +35,12 @@ public class CommentController {
     }
 
     @GetMapping("/post/{postId}")
-    public List<Comment> getCommentsByPostId(@PathVariable Long postId) {
-        return commentService.getCommentsByPostId(postId);
+    public List<CommentDto> getCommentsByPostId(@PathVariable Long postId) {
+        return mapper.toDto(commentService.getCommentsByPostId(postId));
     }
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<Comment> getCommentById(@PathVariable Long commentId) {
+    public ResponseEntity<CommentDto> getCommentById(@PathVariable Long commentId) {
         Optional<Comment> optionalComment = commentService.getCommentById(commentId);
 
         if (optionalComment.isEmpty()) {
@@ -44,7 +48,7 @@ public class CommentController {
         }
 
         Comment comment = optionalComment.get();
-        return ResponseEntity.ok(comment);
+        return ResponseEntity.ok(mapper.toDto(comment));
     }
 
     @DeleteMapping("/{commentId}")

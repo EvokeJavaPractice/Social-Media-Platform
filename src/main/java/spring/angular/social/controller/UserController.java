@@ -34,6 +34,10 @@ import spring.angular.social.securityRequest.LoginRequest;
 import spring.angular.social.securityRequest.SignupRequest;
 import spring.angular.social.securityResponse.JwtResponse;
 import spring.angular.social.securityResponse.MessageResponse;
+
+import spring.angular.social.dto.UserDto;
+import spring.angular.social.mappers.UserMapper;
+
 import spring.angular.social.service.UserService;
 import spring.angular.social.util.JwtUtils;
 
@@ -42,11 +46,10 @@ import spring.angular.social.util.JwtUtils;
 @RequestMapping("/api/users")
 public class UserController {
 
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    private UserService userService;
-    
-    @Autowired
+	@Autowired
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
@@ -58,17 +61,38 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder encoder;
 
-//    @PostMapping
-//    public ResponseEntity<User> saveUser(@RequestBody User user) {
-//        User usr = userService.save(user);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(usr);
+	@Autowired
+	private UserMapper mapper;
+
+//	@PostMapping
+//    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
+//        User usr= userService.save(mapper.toEntity(userDto));
+//        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDto(usr));
+//    }
+//
+//    @PostMapping("/login")
+//    public ResponseEntity<UserDto> getUser(@RequestBody UserDto userDto) {
+//        User usr = userService.getUser(mapper.toEntity(userDto));
+//        return ResponseEntity.status(HttpStatus.OK).body(mapper.toDto(usr));
 //    }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<User> getUser(@RequestBody User user) {
-//        User usr = userService.getUser(user);
-//        return ResponseEntity.status(HttpStatus.OK).body(usr);
-//    }
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(mapper.toDto(users));
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<UserDto> getUserByUsername(@PathVariable String username) {
+        User user = userService.findByUsername(username);
+        return ResponseEntity.ok(mapper.toDto(user));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.ok("user deleted");
+    }
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -81,7 +105,7 @@ public class UserController {
 		}
 
 		// check email exist
-		if (userRepository.existsByEmail(signupRequest.getEmail())) {
+		if (userRepository.existsByEmailId(signupRequest.getEmail())) {
 			return ResponseEntity.badRequest().body(new MessageResponse(" EmailId already exist"));
 		}
 		// create user
@@ -113,14 +137,13 @@ public class UserController {
 			HttpHeaders responseHeaders = new HttpHeaders();
 			responseHeaders.set("Authorization", "Bearer " + jwt);
 			responseHeaders.set("Username", userDetails.getUsername());
-			responseHeaders.set("Email", userDetails.getEmail());
+			responseHeaders.set("Email", userDetails.getEmailId());
 
 			// Create the JwtResponse object with the user details
 			JwtResponse jwtResponse = new JwtResponse(jwt, // token
 					userDetails.getId(), // id
 					userDetails.getUsername(), // username
-					userDetails.getEmail() // email
-
+					userDetails.getEmailId() // email
 			);
 
 			// Return response with the JwtResponse in the body and the JWT token in the
@@ -137,23 +160,4 @@ public class UserController {
 
 		}
 	}
-
-	@GetMapping
-	public ResponseEntity<List<User>> getAllUsers() {
-		List<User> users = userService.getAllUsers();
-		return ResponseEntity.ok(users);
-	}
-
-	@GetMapping("/{username}")
-	public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
-		User user = userService.findByUsername(username);
-		return ResponseEntity.ok(user);
-	}
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-		userService.delete(id);
-		return ResponseEntity.ok("user deleted");
-	}
-
 }
