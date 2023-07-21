@@ -13,7 +13,9 @@ import spring.angular.social.repository.FriendConnectionRepository;
 
 @Service
 public class FriendConnectionService {
-    private final FriendConnectionRepository friendConnectionRepository;
+	@Autowired
+    private  FriendConnectionRepository friendConnectionRepository;
+   
 
     @Autowired
     private NotificationService notificationService;
@@ -47,7 +49,7 @@ public class FriendConnectionService {
 	 * friendConnectionRepository.delete(friendConnection); }
 	 */
     
- public FriendConnection createFriendConnection(Long userId, Long friendId) {
+public FriendConnection createFriendConnection(Long userId, Long friendId) {
     	
     	
 
@@ -69,22 +71,110 @@ public class FriendConnectionService {
              connection.setFriend(friend);
              
              Notification notification = new Notification();
-             notification.setUser(connection.getUser());
-             notification.setMessage("You connected with a new freind... "+ connection.getFriend().getUsername());
+             notification.setUser(connection.getFriend());
+             notification.setMessage("You received a new friend request from "+ connection.getUser().getUsername());
              notification.setCreatedAt(LocalDateTime.now());
 
              connection.setNotification(notification);
 
              notificationService.createNotification(notification);
-
              
-             return friendConnectionRepository.save(connection);
+           FriendConnection savedConnection = friendConnectionRepository.save(connection);
+           
+           return savedConnection;
+             
         }
-        
 
     }
+	
+//public String  acceptFriendRequest(Long userId, Long friendId) {
+//    Optional<FriendConnection> optionalFriendConnection = userService.findFriendConnectionByUsers(userId, friendId);
+//    System.out.println("userId"+userId);
+//	System.out.println("friendId"+friendId);
+//    if (optionalFriendConnection.isPresent()) {
+//        FriendConnection friendConnection = optionalFriendConnection.get();
+//
+//        if (!friendConnection.isFriends()) {
+//            friendConnection.setFriends(true);
+//            
+//            Optional<User> optionalUser = userService.findById(userId);
+//            Optional<User> optionalFriend = userService.findById(friendId);
+//            
+//            User user = optionalUser.get();
+//            User friend = optionalFriend.get();
+//            FriendConnection connection = new FriendConnection();
+//            connection.setUser(user);
+//            connection.setFriend(friend);
+//
+//            
+//            Notification notification = new Notification();
+//            notification.setRead(true);
+//            notification.setUser(connection.getUser());
+//            notification.setMessage( connection.getFriend().getUsername()+" "+"Accepted Your friend Request ");
+//            notification.setCreatedAt(LocalDateTime.now());
+//
+//            connection.setNotification(notification);
+//
+//            notificationService.createNotification(notification);
+//            
+//            friendConnectionRepository.save(friendConnection);
+//        } else {
+//            throw new RuntimeException("You are already friends.");
+//        }
+//    } else {
+//        throw new RuntimeException("Friend connection not found.");
+//    }
+//	return "Request accepted";
+//}
 
-    public void deleteFriendConnection(FriendConnection friendConnection) {
+public String  acceptFriendRequest(Long notificationId) {
+    Optional<FriendConnection> fc =friendConnectionRepository.findByNotificationId(notificationId);
+  Long userId = fc.get().getUser().getId();
+  Long friendId= fc.get().getFriend().getId();
+  
+    if (fc.isPresent()) {
+        FriendConnection friendConnection = fc.get();
+
+        if (!friendConnection.isFriends()) {
+            friendConnection.setFriends(true);
+            
+            Optional<User> optionalUser = userService.findById(userId);
+            Optional<User> optionalFriend = userService.findById(friendId);
+            
+            User user = optionalUser.get();
+            User friend = optionalFriend.get();
+            FriendConnection connection = new FriendConnection();
+            connection.setUser(user);
+            connection.setFriend(friend);
+
+            
+            Notification notification = new Notification();
+            notification.setRead(true);
+            notification.setUser(connection.getUser());
+            notification.setMessage( connection.getFriend().getUsername() +" "+"Accepted Your friend Request ");
+            notification.setCreatedAt(LocalDateTime.now());
+
+            connection.setNotification(notification);
+
+            notificationService.createNotification(notification);
+            
+            friendConnectionRepository.save(friendConnection);
+        } else {
+            throw new RuntimeException("You are already friends.");
+        }
+    } else {
+        throw new RuntimeException("Friend connection not found.");
+    }
+	return "Request accepted";
+}
+
+//    private FriendConnection getNotificationById(Long notificationId) {
+//	
+//	 Optional<FriendConnection> friendConnection = friendConnectionRepository.findByNotificationId(notificationId);
+//	 return friendConnection.orElse(null);
+//}
+
+	public void deleteFriendConnection(FriendConnection friendConnection) {
         friendConnectionRepository.delete(friendConnection);
     }
 
@@ -117,6 +207,23 @@ public class FriendConnectionService {
 
 	public void setNotificationService(NotificationService notificationService) {
 		this.notificationService = notificationService;
+		
+	}
+
+	public void declineFriendRequest(Long notificationId) {
+		Optional<FriendConnection> friendConnection = friendConnectionRepository.findByNotificationId(notificationId);
+		System.out.println(friendConnection.get());
+		User user = friendConnection.get().getUser();
+		String friendName = friendConnection.get().getFriend().getUsername();
+		 
+		Notification notification = new Notification();
+		notification.setMessage(friendName+" "+" Declined Your Friend Request");
+		notification.setUser(user);
+		notification.setCreatedAt(LocalDateTime.now());
+		notificationService.createNotification(notification);
+         
+         friendConnectionRepository.delete(friendConnection.get());
+		
 		
 	}
 }
