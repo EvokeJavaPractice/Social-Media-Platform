@@ -1,6 +1,7 @@
 package spring.angular.social.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name="social_user")
+@NoArgsConstructor
 public class User {
 
 		@Id
