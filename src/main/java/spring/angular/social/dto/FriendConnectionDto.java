@@ -14,5 +14,7 @@ public class FriendConnectionDto {
 
     private User friend;
 
+    private boolean isFriends;
+
     private Notification notification;
 }

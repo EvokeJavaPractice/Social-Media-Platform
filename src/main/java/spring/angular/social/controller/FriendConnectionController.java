@@ -1,18 +1,18 @@
 package spring.angular.social.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import spring.angular.social.dto.FriendConnectionDto;
 import spring.angular.social.entity.FriendConnection;
 import spring.angular.social.entity.User;
 import spring.angular.social.mappers.FriendConnectionMapper;
 import spring.angular.social.service.FriendConnectionService;
 import spring.angular.social.service.UserService;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin("http://localhost:4200")
@@ -27,33 +27,7 @@ public class FriendConnectionController {
     @Autowired
     private FriendConnectionMapper mapper;
 
-	/*
-	 * @PostMapping public ResponseEntity<FriendConnection>
-	 * createFriendConnection(@RequestParam("userId") Long userId,
-	 * 
-	 * @RequestParam("friendId") Long friendId) { Optional<User> optionalUser =
-	 * userService.findById(userId); Optional<User> optionalFriend =
-	 * userService.findById(friendId);
-	 * 
-	 * if (optionalUser.isEmpty() || optionalFriend.isEmpty()) { return
-	 * ResponseEntity.notFound().build(); }
-	 * 
-	 * User user = optionalUser.get(); User friend = optionalFriend.get();
-	 * 
-	 * FriendConnection connection =
-	 * friendConnectionService.createFriendConnection(user, friend); return
-	 * ResponseEntity.ok(connection); }
-	 * 
-	 * 
-	 * @DeleteMapping("/{id}") public ResponseEntity<?>
-	 * deleteFriendConnection(@PathVariable Long id) { FriendConnection
-	 * friendConnection = friendConnectionService.findById(id);
-	 * 
-	 * if (friendConnection == null) { return ResponseEntity.notFound().build(); }
-	 * 
-	 * friendConnectionService.deleteFriendConnection(friendConnection); return
-	 * ResponseEntity.ok().build(); }
-	 */
+
     
     @PostMapping
     public ResponseEntity<FriendConnectionDto> createFriendConnection(@RequestParam("userId") Long userId,
@@ -105,5 +79,16 @@ public class FriendConnectionController {
     @GetMapping("/users/{userId}/friends/{friendId}")
     public boolean isFriend(@PathVariable int userId, @PathVariable int friendId) {
         return friendConnectionService.isFriend(userId, friendId);
+    }
+    @PostMapping("/friendRequest/{notificationId}")
+    public ResponseEntity<String> acceptFriendRequest(@PathVariable Long notificationId) {
+
+        return new ResponseEntity<String>(friendConnectionService.acceptFriendRequest(notificationId),HttpStatus.OK);
+    }
+    @DeleteMapping("/{notificationId}")
+    public ResponseEntity<?> declineFriendRequest(@PathVariable Long notificationId ){
+    	friendConnectionService.declineFriendRequest(notificationId);
+		return ResponseEntity.ok(HttpStatus.OK);
+
     }
 }
