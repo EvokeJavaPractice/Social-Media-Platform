@@ -23,8 +23,8 @@ public class PostLikeController {
     private PostLIkeMapper mapper;
 
 	@PostMapping
-    public ResponseEntity<PostLikeDto> createPostLike(@RequestBody PostLike like) {
-        PostLike createdPostLike = likeService.createPostLike(like);
+    public ResponseEntity<PostLikeDto> createPostLike(@RequestBody PostLikeDto likeDto) {
+        PostLike createdPostLike = likeService.createPostLike(mapper.toEntity(likeDto));
         return ResponseEntity.ok(mapper.toDto(createdPostLike));
     }
 

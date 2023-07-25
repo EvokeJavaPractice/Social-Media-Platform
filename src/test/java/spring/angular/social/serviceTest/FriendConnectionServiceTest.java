@@ -1,10 +1,8 @@
 package spring.angular.social.serviceTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,9 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,7 +38,7 @@ public class FriendConnectionServiceTest {
     @MockBean
     private NotificationService notificationService;
 
-    @Before
+    @Before("")
     public void setup() {
 
         MockitoAnnotations.initMocks(this);

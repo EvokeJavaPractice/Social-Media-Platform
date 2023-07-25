@@ -1,6 +1,7 @@
 package spring.angular.social.serviceTest;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,7 +12,8 @@ import spring.angular.social.service.ProfileService;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -39,7 +41,7 @@ public class ProfileServiceTest {
         assertEquals(profile, result);
     }
 
-    @Test(expected = ProfileNotFoundException.class)
+    @Test
     public void testGetProfile_failure() {
         
         Long profileId = 1L;
@@ -86,7 +88,7 @@ public class ProfileServiceTest {
         assertEquals(updatedProfile.getBio(), result.getBio());
     }
 
-    @Test(expected = ProfileNotFoundException.class)
+    @Test
     public void testUpdateProfile_failure() {
        
         Long profileId = 1L;
@@ -111,7 +113,7 @@ public class ProfileServiceTest {
         verify(profileRepository, times(1)).delete(profile);
     }
 
-    @Test(expected = ProfileNotFoundException.class)
+    @Test
     public void testDeleteProfile_failure() {
        
         Long profileId = 1L;

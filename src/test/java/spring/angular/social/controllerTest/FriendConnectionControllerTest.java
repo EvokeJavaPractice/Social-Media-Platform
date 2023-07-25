@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import spring.angular.social.controller.FriendConnectionController;
+import spring.angular.social.dto.FriendConnectionDto;
 import spring.angular.social.entity.FriendConnection;
 import spring.angular.social.entity.User;
 import spring.angular.social.service.FriendConnectionService;
@@ -27,7 +28,7 @@ public class FriendConnectionControllerTest {
     private final UserService userService = mock(UserService.class);
 
     private final FriendConnectionController friendConnectionController =
-            new FriendConnectionController(friendConnectionService, userService);
+            new FriendConnectionController();
 
 
     @Test
@@ -43,7 +44,7 @@ public class FriendConnectionControllerTest {
         Mockito.when(userService.findById(friendId)).thenReturn(Optional.of(friend));
         Mockito.when(friendConnectionService.createFriendConnection(userId, friendId)).thenReturn(connection);
 
-        ResponseEntity<FriendConnection> response =
+        ResponseEntity<FriendConnectionDto> response =
                 friendConnectionController.createFriendConnection(userId, friendId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -57,7 +58,7 @@ public class FriendConnectionControllerTest {
         Long friendId = 2L;
         Mockito.when(userService.findById(userId)).thenReturn(Optional.empty());
 
-        ResponseEntity<FriendConnection> response =
+        ResponseEntity<FriendConnectionDto> response =
                 friendConnectionController.createFriendConnection(userId, friendId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -73,7 +74,7 @@ public class FriendConnectionControllerTest {
         Mockito.when(userService.findById(userId)).thenReturn(Optional.of(user));
         Mockito.when(userService.findById(friendId)).thenReturn(Optional.empty());
 
-        ResponseEntity<FriendConnection> response =
+        ResponseEntity<FriendConnectionDto> response =
                 friendConnectionController.createFriendConnection(userId, friendId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());

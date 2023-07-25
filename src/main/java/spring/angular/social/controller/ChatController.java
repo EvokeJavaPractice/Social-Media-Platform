@@ -28,8 +28,8 @@ public class ChatController {
     private ChatMessageMapper messageMapper;
 
     @PostMapping
-    public ResponseEntity<ChatDto> createChat(@RequestBody Chat chat) {
-        Chat createdChat = chatService.createChat(chat);
+    public ResponseEntity<ChatDto> createChat(@RequestBody ChatDto chatDto) {
+        Chat createdChat = chatService.createChat(mapper.toEntity(chatDto));
         return ResponseEntity.ok(mapper.toDto(createdChat));
     }
 
@@ -40,8 +40,8 @@ public class ChatController {
     }
 
     @PostMapping("/{chatId}/messages")
-    public ResponseEntity<ChatMessageDto> sendChatMessage(@PathVariable Long chatId, @RequestBody ChatMessage message) {
-        ChatMessage sentMessage = chatService.sendChatMessage(chatId, message);
+    public ResponseEntity<ChatMessageDto> sendChatMessage(@PathVariable Long chatId, @RequestBody ChatMessageDto messageDto) {
+        ChatMessage sentMessage = chatService.sendChatMessage(chatId, messageMapper.toEntity(messageDto));
         return ResponseEntity.ok(messageMapper.toDto(sentMessage));
     }
 

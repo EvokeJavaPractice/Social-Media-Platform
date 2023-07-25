@@ -1,17 +1,11 @@
 package spring.angular.social.controllerTest;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import spring.angular.social.controller.NotificationController;
+import spring.angular.social.dto.NotificationDto;
 import spring.angular.social.entity.Notification;
 import spring.angular.social.service.NotificationService;
 
@@ -25,15 +19,17 @@ import static org.mockito.Mockito.*;
 public class NotificationControllerTest {
 
     private final NotificationService notificationService = mock(NotificationService.class);
-    private final NotificationController notificationController = new NotificationController(notificationService);
+    private final NotificationController notificationController = new NotificationController();
 
     @Test
     public void testCreateNotification() {
     	
     	Notification notification = new Notification();
         when(notificationService.createNotification(notification)).thenReturn(notification);
+
+        NotificationDto notificationDto=new NotificationDto();
         
-        ResponseEntity<Notification> expectedResult = notificationController.createNotification(notification);
+        ResponseEntity<NotificationDto> expectedResult = notificationController.createNotification(notificationDto);
         
         assertEquals(expectedResult.getStatusCode(),HttpStatus.OK);
         assertEquals(expectedResult.getBody(),notification); 
@@ -49,7 +45,7 @@ public class NotificationControllerTest {
     	
     	when(notificationService.getNotificationById(notificationId)).thenReturn(Optional.of(notification));
     	
-    	ResponseEntity<Notification> expectedResult = notificationController.getNotificationById(notificationId);
+    	ResponseEntity<NotificationDto> expectedResult = notificationController.getNotificationById(notificationId);
     	
     	assertEquals(expectedResult.getStatusCode(),HttpStatus.OK);
         assertEquals(expectedResult.getBody(),notification); 
@@ -63,7 +59,7 @@ public class NotificationControllerTest {
     	
     	when(notificationService.getNotificationById(notificationId)).thenReturn(Optional.empty());
     	
-    	ResponseEntity<Notification> expectedResult = notificationController.getNotificationById(notificationId);
+    	ResponseEntity<NotificationDto> expectedResult = notificationController.getNotificationById(notificationId);
     	
     	assertEquals(expectedResult.getStatusCode(),HttpStatus.NOT_FOUND);
         assertEquals(expectedResult.getBody(),null); 
@@ -82,7 +78,7 @@ public class NotificationControllerTest {
     	
     	when(notificationService.getNotificationsByUserId(userId)).thenReturn(notifications);
     	
-    	ResponseEntity<List<Notification>> expectedResult = notificationController.getNotificationsByUserId(userId);
+    	ResponseEntity<List<NotificationDto>> expectedResult = notificationController.getNotificationsByUserId(userId);
     	
     	assertEquals(expectedResult.getStatusCode(),HttpStatus.OK);
         assertEquals(expectedResult.getBody(),notifications); 
@@ -128,7 +124,7 @@ public class NotificationControllerTest {
         
         when(notificationService.updateNotification(notification)).thenReturn(notification);
         
-        ResponseEntity<Notification> expectedResult = 
+        ResponseEntity<NotificationDto> expectedResult =
         		notificationController.markNotificationAsRead(notificationId);
        
         assertEquals(expectedResult.getStatusCode(),HttpStatus.OK);
@@ -143,7 +139,7 @@ public class NotificationControllerTest {
         
         when(notificationService.getNotificationById(notificationId)).thenReturn(Optional.empty());
         
-        ResponseEntity<Notification> expectedResult = 
+        ResponseEntity<NotificationDto> expectedResult =
         		notificationController.markNotificationAsRead(notificationId);
      
         assertEquals(expectedResult.getStatusCode(),HttpStatus.NOT_FOUND);

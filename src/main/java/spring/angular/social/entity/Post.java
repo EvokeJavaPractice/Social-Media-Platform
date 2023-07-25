@@ -3,6 +3,7 @@ package spring.angular.social.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Setter
 @Table
 @Entity
+@ToString
 public class Post {
 	
 	@Id

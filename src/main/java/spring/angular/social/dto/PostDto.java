@@ -3,11 +3,13 @@ package spring.angular.social.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import spring.angular.social.entity.User;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class PostDto {
 
 	private long id;

@@ -1,17 +1,16 @@
 package spring.angular.social.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import spring.angular.social.entity.Chat;
 import spring.angular.social.entity.Notification;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@ToString
+@NoArgsConstructor
 public class ChatMessageDto {
     private Long id;
 

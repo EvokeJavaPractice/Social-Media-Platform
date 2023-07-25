@@ -1,10 +1,6 @@
 package spring.angular.social.serviceTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -39,7 +35,7 @@ public class CommentServiceTest {
     @Mock
     private NotificationService notificationService;
 
-    @Before
+    @Before("")
     public void setup() {
         MockitoAnnotations.initMocks(this);
         service = new CommentService(repo);
@@ -51,7 +47,7 @@ public class CommentServiceTest {
     	
         
     	User u = new User();
-    	u.setId(new Long(1));
+    	u.setId(1L);
     	u.setEmailId("xyz@gmail.com");
     	u.setUsername("ABC");
     	u.setPassword("ABC");

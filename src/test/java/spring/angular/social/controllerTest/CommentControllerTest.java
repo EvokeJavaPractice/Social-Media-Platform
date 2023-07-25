@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import spring.angular.social.controller.CommentController;
+import spring.angular.social.dto.CommentDto;
 import spring.angular.social.entity.Comment;
 import spring.angular.social.service.CommentService;
 
@@ -22,7 +23,7 @@ public class CommentControllerTest {
     private final CommentService commentService = 
     		mock(CommentService.class);
     private final CommentController commentController = 
-    		new CommentController(commentService);
+    		new CommentController();
 
     @Test
     public void testCreateComment() {
@@ -30,10 +31,12 @@ public class CommentControllerTest {
         Comment comment = new Comment();
         
         Comment createdComment = new Comment();
+
+
         
         Mockito.when(commentService.createComment(comment)).thenReturn(createdComment);
 
-        ResponseEntity<Comment> response = commentController.createComment(comment);
+        ResponseEntity<CommentDto> response = commentController.createComment(comment);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(createdComment, response.getBody());
@@ -59,7 +62,7 @@ public class CommentControllerTest {
         List<Comment> comments = new ArrayList<>();
         Mockito.when(commentService.getCommentsByPostId(postId)).thenReturn(comments);
 
-        List<Comment> response = commentController.getCommentsByPostId(postId);
+        List<CommentDto> response = commentController.getCommentsByPostId(postId);
 
         assertEquals(comments, response);
     }
@@ -71,7 +74,7 @@ public class CommentControllerTest {
         Comment comment = new Comment();
         Mockito.when(commentService.getCommentById(commentId)).thenReturn(Optional.of(comment));
 
-        ResponseEntity<Comment> response = commentController.getCommentById(commentId);
+        ResponseEntity<CommentDto> response = commentController.getCommentById(commentId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(comment, response.getBody());
@@ -83,7 +86,7 @@ public class CommentControllerTest {
         Long commentId = 1L;
         Mockito.when(commentService.getCommentById(commentId)).thenReturn(Optional.empty());
 
-        ResponseEntity<Comment> response = commentController.getCommentById(commentId);
+        ResponseEntity<CommentDto> response = commentController.getCommentById(commentId);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertTrue(response.getBody() == null);

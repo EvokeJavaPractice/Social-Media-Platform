@@ -2,10 +2,12 @@ package spring.angular.social.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import spring.angular.social.entity.User;
 
 @Setter
 @Getter
+@ToString
 public class ProfileDto {
 
     private Long id;
