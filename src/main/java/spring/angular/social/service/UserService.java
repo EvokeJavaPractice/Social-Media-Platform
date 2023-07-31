@@ -1,41 +1,55 @@
 package spring.angular.social.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import spring.angular.social.entity.FriendConnection;
 import spring.angular.social.entity.User;
+import spring.angular.social.exception.DuplicateAccountException;
 import spring.angular.social.exception.InvalidPasswordException;
 import spring.angular.social.exception.UserNotFoundException;
 import spring.angular.social.repository.FriendConnectionRepository;
 import spring.angular.social.repository.UserRepository;
+import spring.angular.social.securityRequest.SignupRequest;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
-    
+
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private FriendConnectionRepository friendConnectionRepository;
-
     @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private PasswordEncoder encoder;
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
     }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-	public User save(User user) {
-		return userRepository.save(user);
-	}
+    public User save(SignupRequest signupRequest) {
+
+        if (userRepository.existsByUsername(signupRequest.getUsername())) {
+            throw new DuplicateAccountException(" Username already exist");
+        }
+
+        // check email exist
+        if (userRepository.existsByEmailId(signupRequest.getEmail())) {
+            throw new DuplicateAccountException(" EmailId already exist");
+        }
+        // create user
+        User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),
+                encoder.encode(signupRequest.getPassword()));
+
+        return userRepository.save(user);
+    }
 
 	public Optional<User> findById(Long userId) {
 		return userRepository.findById(userId);
