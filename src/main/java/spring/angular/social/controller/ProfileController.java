@@ -62,6 +62,14 @@ public class ProfileController {
         return new ResponseEntity<>(mapper.toDto(profileService.uploadImage(profileId, file)), HttpStatus.OK);
     }
 
+    @GetMapping("/{profileId}/image")
+    public ResponseEntity<String> getImageUrl(@PathVariable Long profileId) {
+
+        Profile profile = profileService.getProfile(profileId);
+        String profileImageUrl= profile.getProfileImage();
+        return new ResponseEntity<String>(profileImageUrl,HttpStatus.OK);
+
+    }
 
     @DeleteMapping("/{profileId}/image")
     public ResponseEntity<Object> deleteImage(@PathVariable Long profileId) {

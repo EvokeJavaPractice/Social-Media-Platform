@@ -16,4 +16,6 @@ public interface FriendConnectionRepository extends JpaRepository<FriendConnecti
     List<FriendConnection> findByUserId(Long userId);
 
     Optional<FriendConnection> findByUserIdAndFriendId(Long userId, Long friendId);
+
+    Optional<FriendConnection>findByNotificationId(Long notificationId);
 }
