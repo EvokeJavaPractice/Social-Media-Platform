@@ -25,6 +25,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
+    @Autowired
+    private EmailService emailService;
+
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
@@ -47,6 +50,8 @@ public class UserService {
         // create user
         User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),
                 encoder.encode(signupRequest.getPassword()));
+
+        emailService.sendEmail();
 
         return userRepository.save(user);
     }
