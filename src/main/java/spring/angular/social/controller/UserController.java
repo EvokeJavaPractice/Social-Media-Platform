@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import spring.angular.social.dto.AllDetails;
 import spring.angular.social.dto.UserDto;
 import spring.angular.social.entity.User;
 import spring.angular.social.entity.UserDetailsImpl;
@@ -65,6 +66,11 @@ public class UserController {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(mapper.toDto(users));
     }
+	@GetMapping("/details")
+	public ResponseEntity<AllDetails> getAllDetails() {
+		AllDetails allDetails= userService.getAllDetails();
+		return ResponseEntity.ok(allDetails);
+	}
 
     @GetMapping("/{username}")
     public ResponseEntity<UserDto> getUserByUsername(@PathVariable String username) {
