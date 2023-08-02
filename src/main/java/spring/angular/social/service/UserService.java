@@ -3,6 +3,8 @@ package spring.angular.social.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import spring.angular.social.dto.AllDetails;
 import spring.angular.social.entity.FriendConnection;
 import spring.angular.social.entity.User;
 import spring.angular.social.exception.DuplicateAccountException;
@@ -34,6 +36,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public AllDetails getAllDetails() {
+        return userRepository.getDetails();
+    }
+
     public User save(SignupRequest signupRequest) {
 
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
@@ -51,28 +58,29 @@ public class UserService {
         return userRepository.save(user);
     }
 
-	public Optional<User> findById(Long userId) {
-		return userRepository.findById(userId);
-		}
+    public Optional<User> findById(Long userId) {
+        return userRepository.findById(userId);
+    }
 
-	public void delete(Long id) {
-		 userRepository.deleteById(id);
-	}
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
 
-	public Optional<FriendConnection> findFriendConnectionByUsers(Long userId, Long friendId) {
+    public Optional<FriendConnection> findFriendConnectionByUsers(Long userId, Long friendId) {
         return friendConnectionRepository.findByUserIdAndFriendId(userId, friendId);
     }
-	public User getUser(User user) {
-		String username= user.getUsername();
-		String password = user.getPassword();
-		User foundUser=findByUsername(username);
-		 if (foundUser == null) {
-	            throw new UserNotFoundException("Invalid username or password");
-	        }
 
-	        if (!foundUser.getPassword().equals(password)) {
-	            throw new InvalidPasswordException("Invalid username or password");
-	        }
-	        return foundUser;
-	}
+    public User getUser(User user) {
+        String username = user.getUsername();
+        String password = user.getPassword();
+        User foundUser = findByUsername(username);
+        if (foundUser == null) {
+            throw new UserNotFoundException("Invalid username or password");
+        }
+
+        if (!foundUser.getPassword().equals(password)) {
+            throw new InvalidPasswordException("Invalid username or password");
+        }
+        return foundUser;
+    }
 }
